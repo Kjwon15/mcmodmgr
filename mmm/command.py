@@ -17,6 +17,7 @@ logger = logging.getLogger()
 
 
 def get_mod_link(mc_version, mod_name, mod_version):
+    # TODO: Fetch next page
     URL = f'https://minecraft.curseforge.com/projects/{mod_name}/files'
     resp = requests.get(URL)
     doc = html.fromstring(resp.text)
@@ -32,7 +33,6 @@ def get_mod_link(mc_version, mod_name, mod_version):
             link = download_link
             break
     else:
-        logger.error('Cannot find MOD')
         link = None
 
     return (mod_name, mod_version, link)

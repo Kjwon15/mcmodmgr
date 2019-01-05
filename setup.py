@@ -19,7 +19,7 @@ setup(
     author_email='kjwonmail@gmail.com',
     entry_points={
         'console_scripts': [
-            'mcmodmgr = mcmodmgr.command:main'
+            'mmm = mmm.command:main'
         ]
     },
     packages=find_packages(),
