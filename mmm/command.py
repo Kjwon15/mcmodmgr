@@ -4,38 +4,15 @@ import sys
 
 from multiprocessing.pool import ThreadPool
 from os import path
-from urllib.parse import urlparse
+from urllib.parse import urlparse, unquote
 
 import requests
 import yaml
 
-from lxml import html
-
+from .curse import get_mod_link
 from .logging import config_logger
 
 logger = logging.getLogger()
-
-
-def get_mod_link(mc_version, mod_name, mod_version):
-    # TODO: Fetch next page
-    URL = f'https://minecraft.curseforge.com/projects/{mod_name}/files'
-    resp = requests.get(URL)
-    doc = html.fromstring(resp.text)
-    doc.make_links_absolute(URL)
-
-    for tr in doc.cssselect('table.listing tbody tr'):
-        download_link = tr.cssselect('td:nth-child(2) a')[0].get('href')
-        name = tr.cssselect('td:nth-child(2) a[data-name]')[0].get('data-name')
-        # TODO: parse additional versions
-        mc_version = tr.cssselect('td.project-file-game-version .version-label')[0].text
-
-        if mc_version == mc_version and name == mod_version:
-            link = download_link
-            break
-    else:
-        link = None
-
-    return (mod_name, mod_version, link)
 
 
 def download(mod_name, mod_version, link):
@@ -43,12 +20,12 @@ def download(mod_name, mod_version, link):
         logger.error(f'Cannot download {mod_name} {mod_version}')
         return
 
-    logger.info(f'Downloading {link}')
+    logger.info(f'Downloading {mod_name} - {mod_version}')
 
     resp = requests.get(link)
     filename = resp.headers.get('Content-Disposition')
     if filename is None:
-        filename = path.basename(urlparse(resp.url).path)
+        filename = unquote(path.basename(urlparse(resp.url).path))
 
     with open(path.join('mods', filename), 'wb') as fp:
         fp.write(resp.content)
@@ -68,7 +45,7 @@ def main():
         config = yaml.load(fp)
 
     link_map = pool.map(
-        lambda x: get_mod_link(config, *x),
+        lambda x: get_mod_link(config['mc_version'], *x),
         config['mod_list'].items()
     )
 

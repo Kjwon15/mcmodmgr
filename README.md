@@ -26,16 +26,17 @@ mmm mods.yml
 mc_version: 1.12.2
 
 mod_list:
-  veinminer: 'VeinMiner 0.38.2 [MC1.12; rev 647]'
-  journeymap: 'journeymap-1.12.2-5.5.3'
+  veinminer: release
+  journeymap: release
 ```
 
 mc_version is Minecraft version.
-`mod_list` contains `mod_name` as key and `mod_version` as value
+`mod_list` contains `mod_name` as key and `release_phase` as value
 
 mod_name can be extracted from curseforge. For example:
 `https://minecraft.curseforge/projects/veinminer/`: `veinminer` as mod_name
 
-mod_version can be extracted from download page. For example:
-Goto https://minecraft.curseforge/projects/veinminer/files
-**name** field from that table is the `mod_version`
+release_phase is one of these:
+- release
+- beta
+- alpha

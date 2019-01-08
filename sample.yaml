@@ -1,5 +1,6 @@
 mc_version: 1.12.2
 
 mod_list:
-  veinminer: VeinMiner 0.38.2 [MC1.12; rev 647]
-  journeymap: journeymap-1.12.2-5.5.3 
+  veinminer: release
+  journeymap: release
+  tinkers-construct: release
