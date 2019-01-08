@@ -1,5 +1,5 @@
 from setuptools import find_packages, setup
-from mcmodmgr._version import __version__ as version
+from mmm._version import __version__ as version
 
 install_reqs = [
     'PyYaml>=3.13',
