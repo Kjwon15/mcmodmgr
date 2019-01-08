@@ -28,6 +28,8 @@ mc_version: 1.12.2
 mod_list:
   veinminer: release
   journeymap: release
+  tinkers-construct: release
+  industrial-craft: 'Industrialcraft-2-2.8.73-ex112'
 ```
 
 mc_version is Minecraft version.
@@ -37,6 +39,7 @@ mod_name can be extracted from curseforge. For example:
 `https://minecraft.curseforge/projects/veinminer/`: `veinminer` as mod_name
 
 release_phase is one of these:
-- release
-- beta
-- alpha
+- `release`
+- `beta`
+- `alpha`
+- Specific version name

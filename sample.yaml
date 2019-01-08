@@ -4,3 +4,4 @@ mod_list:
   veinminer: release
   journeymap: release
   tinkers-construct: release
+  industrial-craft: 'Industrialcraft-2-2.8.73-ex112'

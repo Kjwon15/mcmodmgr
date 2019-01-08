@@ -32,30 +32,45 @@ def get_phase(td_elem):
     return next(filter(lambda x: x.endswith('-phase'), classes)).replace('-phase', '')
 
 
+def is_specific_version(release_type):
+    return release_type not in ('alpha', 'beta', 'release')
+
+
+def get_next_url(doc):
+    try:
+        return doc.cssselect('a[rel="next"][href]')[0].get('href')
+    except IndexError:
+        return None
+
+
 def get_mod_link(mc_version, mod_name, release_type):
     if mc_version not in GAME_VERSION_MAP:
         raise ValueError(f'Versino {mc_version} is currently not supported')
 
-    # TODO: Fetch next page
     URL = f'https://minecraft.curseforge.com/projects/{mod_name}/files'
     resp = requests.get(URL, {
         'filter-game-version': GAME_VERSION_MAP[mc_version]
     })
-    doc = html.fromstring(resp.text)
-    doc.make_links_absolute(URL)
 
-    for tr in doc.cssselect('table.listing tbody tr'):
-        phase = get_phase(
-            tr.cssselect('td.project-file-release-type')[0])
-        mod_version = tr.cssselect('td.project-file-name a[data-name]')[0].get('data-name')
-        download_link = tr.cssselect('td:nth-child(2) a')[0].get('href')
-        # TODO: parse additional versions
+    while True:
+        doc = html.fromstring(resp.text)
+        doc.make_links_absolute(URL)
 
-        if phase == release_type:
-            link = download_link
+        for tr in doc.cssselect('table.listing tbody tr'):
+            phase = get_phase(
+                tr.cssselect('td.project-file-release-type')[0])
+            mod_version = tr.cssselect('td.project-file-name a[data-name]')[0].get('data-name')
+            download_link = tr.cssselect('td:nth-child(2) a')[0].get('href')
+
+            if (is_specific_version(release_type) and mod_version == release_type) or \
+                    (phase == release_type):
+                link = download_link
+                return (mod_name, mod_version, link)
+
+        next_url = get_next_url(doc)
+        if next_url:
+            resp = requests.get(next_url)
+        else:
             break
-    else:
-        mod_version = None
-        link = None
 
-    return (mod_name, mod_version, link)
+    return (mod_name, None, None)
